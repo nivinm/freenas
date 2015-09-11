@@ -1,0 +1,14 @@
+#--Scan Backups --#
+clamscan -r /mnt/backups -l /mnt/security/logs/"clamscan_scan_backups_`date +\%m_\%d_\%y_\%H\%M\%S`".log --move=/mnt/security/quarantine > /dev/null 2>&1
+if [ "$?" = "0" ];
+	then 
+	#	echo "ClamAV: Backups Scan Complete. Date: `date`"
+		echo "INSERT INTO htpc.process (client, application, status) VALUES ('ClamAV', 'Backups Scan', 'Success');" | mysql -u[username] -p[password]
+		echo "`date` CLAMAV SUCCESS SCAN BACKUP"
+	else
+	#	echo "ClamAV: Backups Scan Failed. Date: `date`"| mail -s "CLAMAV: Backups Scan Failed." [mail to user]
+		echo "INSERT INTO htpc.process (client, application, status) VALUES ('ClamAV', 'Backups Scan', 'Failed');" | mysql -u[username] -p[password] 
+	 	echo "`date` CLAMAV FAILED SCAN BACKUP"
+		cat /mnt/Security/cron/clamscan_scan_backups.log | mail -s "CLAMAV: Backups Scan Failed." [mail to user]
+		exit 1
+fi
