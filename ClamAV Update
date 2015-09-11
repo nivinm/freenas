@@ -1,0 +1,14 @@
+#--Update ClamAV --#
+freshclam > /mnt/security/logs/clamscan_update.log > /dev/null 2>&1
+if [ "$?" = "0" ];
+	then 
+		echo "INSERT INTO htpc.process (client, application, status) VALUES ('ClamAV', 'Update', 'Success');" | mysql -u[username] -p[password]
+		echo "ClamAV Updated. Date: `date`"
+		echo "`date` CLAMAV SUCCESS UPDATE Scan"
+	else
+		#echo "ClamAV Failed. Date: `date`"| mail -s "CLAMAV: Update Failed." root
+		echo "INSERT INTO htpc.process (client, application, status) VALUES ('ClamAV', 'Update', 'Failed');" | mysql -u[username] -p[password]
+		echo "`date` CLAMAV FAILED UPDATE Scan"
+		cat /mnt/security/logs/clamscan_update.log | mail -s "CLAMAV: UPDATE Failed." 
+		exit 1
+fi
