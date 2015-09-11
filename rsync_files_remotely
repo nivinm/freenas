@@ -1,0 +1,26 @@
+trap "echo Exited!; exit;" SIGINT SIGTERM
+MAX_RETRIES=3
+i=0
+false
+
+while [ $? -ne 0 -a $i -lt $MAX_RETRIES ]
+	do
+	i=$(($i+1))
+
+	rsync -av               \
+		--no-p 				        \
+		--no-o 				        \
+		--progress 		      	\
+		--rsh='ssh -p[remote_port]' 		\
+		--exclude-from '/[your_file_path]/rsync_exclude_files.txt'  \
+		--delete-after /[your_file_path] [rsync_user]@[dns_name]:/[remote_file_path]/ > /[your_file_log_file_path]/[log_file_name].log || sleep 10s
+	done
+		
+if [ $i -eq $MAX_RETRIES ]
+	then
+		cat /[your_file_log_file_path]/[log_file_name].log | mail -E -s "[your_subject] Failed" [email_to_user]
+		jexec [jail_name] mysql -u[user_name] -p[password] -e "INSERT INTO [database].[table] ([columns]) VALUES ([values],Failed);"
+	else
+		awk '/[filetype]/' /[your_file_log_file_path]/[log_file_name].log | mail -E -s "[your_subject] Success" [email_to_user]
+		jexec [jail_name] mysql -u[user_name] -p[password] -e "INSERT INTO [database].[table] ([columns]) VALUES ([values], Success);"
+fi
