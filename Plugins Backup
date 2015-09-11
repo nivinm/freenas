@@ -1,0 +1,23 @@
+#couchpotato
+echo 'Backing up Couchpotato'
+cp /mnt/zfs/jails/[jailname]/var/db/[pluginname]/settings.conf /mnt/zfs/Backups/Freenas/[pluginname]/
+cp /mnt/zfs/jails/[jailname]/usr/pbi/[pluginname]-amd64/[pluginname]/[pluginname].db /mnt/zfs/Backups/Freenas/[pluginname]/
+cd /mnt/zfs/Backups/Freenas/[jailname]/
+tar -zcvf "[pluginname]`date +\%m_\%d_\%y`".tar.gz *.conf *.db
+rm *.conf *.db
+
+#sickrage
+echo 'Backing up Sickrage'
+cp /mnt/zfs/jails/[jailname]/var/db/[pluginname]/[pluginname].db /mnt/zfs/Backups/Freenas/[pluginname]/
+cp /mnt/zfs/jails/[jailname]/var/db/[pluginname]/config.ini /mnt/zfs/Backups/Freenas/[pluginname]/
+cd /mnt/zfs/Backups/Freenas/Sickrage/
+tar -zcvf "[pluginname]`date +\%m_\%d_\%y`".tar.gz *.db *.ini
+rm *.db *.ini
+
+#sabnzbd
+echo 'Backing up Sabzndb'
+cp /mnt/zfs/jails/[jailname]/var/db/sabnzbd/sabnzbd.ini /mnt/zfs/Backups/Freenas/[pluginname]/
+cd /mnt/zfs/Backups/Freenas/[pluginname]/
+tar -zcvf "[pluginname]`date +\%m_\%d_\%y`".tar.gz *.ini
+rm *.ini
+
