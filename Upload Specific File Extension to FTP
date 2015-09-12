@@ -1,0 +1,32 @@
+#!/bin/bash
+FILE=""
+DIR="[directory path]"
+
+if [ "$(ls -A $DIR)" ]; then
+echo "[your message]. Date: `date`"
+        
+        find [your path] -type f -name '*.torrent' -print0 | xargs -0 chown 700
+
+        SERVER="[ftp server name]"
+        USERNAME="[username]"
+        PASSWORD="[password]"
+
+
+# login to remote server
+        ftp -n -i $SERVER <<EOF
+        user $USERNAME $PASSWORD
+        cd /torrents
+        bin
+        mput  *.[extension]
+        mget  *.[extension]
+        quit
+EOF
+rm *.torrent
+
+
+
+else
+        echo "No Torrents Available. Date: `date`"
+		
+fi
+
