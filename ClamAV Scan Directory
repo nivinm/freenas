@@ -1,4 +1,4 @@
-#--Scan Backups --#
+#--Scan Backups --##
 clamscan -r /mnt/backups -l /mnt/security/logs/"clamscan_scan_backups_`date +\%m_\%d_\%y_\%H\%M\%S`".log --move=/mnt/security/quarantine > /dev/null 2>&1
 if [ "$?" = "0" ];
 	then 
